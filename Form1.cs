@@ -21,12 +21,14 @@ namespace DemandasApp
         private CancellationTokenSource? _cancellationTokenSource;
         private HttpClient _httpClient;
         private CookieContainer _cookieContainer;
+        private readonly Random _random = new Random();
         private static readonly string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
 
         public Form1()
         {
-            CleanupOldLogEntries();
             InitializeComponent();
+            CleanupOldLogEntries();
+            UpdateInitialCount();
             btnStart.Click += btnStart_Click;
             btnStop.Click += btnStop_Click;
             this.KeyPreview = true;
@@ -53,6 +55,30 @@ namespace DemandasApp
                 settingsForm.ShowDialog(this);
             }
             Log("Formulário de configurações aberto e fechado.");
+        }
+
+        private async void UpdateInitialCount()
+        {
+            try
+            {
+                lblTotal.Text = "Total a processar: Carregando...";
+                var connectionString = $"Server={Properties.Settings.Default.DB_HOST};Port={Properties.Settings.Default.DB_PORT};Database={Properties.Settings.Default.DB_NAME};Uid={Properties.Settings.Default.DB_USER};Pwd={Properties.Settings.Default.DB_PASS};";
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    var countQuery = $"SELECT COUNT(*) FROM {Properties.Settings.Default.TABLE_NAME} WHERE status IN ('Aberto', 'Em andamento') AND (complemento IS NULL OR complemento = '') AND (referencia IS NULL OR referencia = '')";
+                    using (var command = new MySqlCommand(countQuery, connection))
+                    {
+                        var totalCount = await command.ExecuteScalarAsync();
+                        lblTotal.Text = $"Total a processar: {totalCount}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                lblTotal.Text = "Total a processar: N/A";
+                Log($"Erro ao buscar contagem inicial: {ex.Message}");
+            }
         }
 
         private void CleanupOldLogEntries()
@@ -179,6 +205,10 @@ namespace DemandasApp
                         int updatedCount = 0;
                         int errorCount = 0;
                         lblTotal.Text = $"Total a processar: {totalChamados}";
+                        lblUpdated.Text = "Atualizados: 0";
+                        lblErrors.Text = "Erros: 0";
+                        progressBar.Value = 0;
+                        lblProgressPercentage.Text = "0%";
 
                         for (int i = 0; i < totalChamados; i++)
                         {
@@ -253,7 +283,9 @@ namespace DemandasApp
                                 lblErrors.Text = $"Erros: {errorCount}";
                                 await Task.Delay(2000, token);
                             }
-                            await Task.Delay(1500, token);
+
+                            int randomDelay = _random.Next(1500, 2501); // Gera um valor entre 1.5 e 2.5 segundos
+                            await Task.Delay(randomDelay, token);
 
                             // Update progress bar
                             int progress = (int)(((double)(i + 1) / totalChamados) * 100);

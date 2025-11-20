@@ -94,9 +94,9 @@ namespace DemandasApp
             this.btnExportFullTable.ForeColor = System.Drawing.Color.White;
             this.btnExportFullTable.Location = new System.Drawing.Point(12, 12);
             this.btnExportFullTable.Name = "btnExportFullTable";
-            this.btnExportFullTable.Size = new System.Drawing.Size(130, 30);
+            this.btnExportFullTable.Size = new System.Drawing.Size(140, 30);
             this.btnExportFullTable.TabIndex = 6;
-            this.btnExportFullTable.Text = "⤓ EXPORTAR";
+            this.btnExportFullTable.Text = "Exportar (xlsx/csv)";
             this.btnExportFullTable.UseVisualStyleBackColor = false;
             this.btnExportFullTable.Click += new System.EventHandler(this.btnExportFullTable_Click);
             // 
