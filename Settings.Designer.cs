@@ -119,7 +119,7 @@ namespace DemandasApp.Properties
 
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ASP.NET_SessionId=m3njulajdbl23jflxzm44n4w; instituicao=3; ControleExpiraSessaoMonitorament=1763598446735")]
         public string AUTH_COOKIE
         {
             get

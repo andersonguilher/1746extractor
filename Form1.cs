@@ -25,6 +25,7 @@ namespace DemandasApp
 
         public Form1()
         {
+            CleanupOldLogEntries();
             InitializeComponent();
             btnStart.Click += btnStart_Click;
             btnStop.Click += btnStop_Click;
@@ -37,6 +38,11 @@ namespace DemandasApp
             _httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7");
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             btnStop.BackColor = System.Drawing.Color.Gray;
+            try
+            {
+                this.Icon = new System.Drawing.Icon("logo.ico");
+            }
+            catch { /* Ignora se o ícone não for encontrado */ }
         }
 
         private void btnSettings_Click(object? sender, EventArgs e)
@@ -47,6 +53,42 @@ namespace DemandasApp
                 settingsForm.ShowDialog(this);
             }
             Log("Formulário de configurações aberto e fechado.");
+        }
+
+        private void CleanupOldLogEntries()
+        {
+            try
+            {
+                if (!File.Exists(logFilePath))
+                {
+                    return;
+                }
+
+                var lines = File.ReadAllLines(logFilePath);
+                var recentLines = new List<string>();
+                var cutoffDate = DateTime.Now.AddDays(-3);
+
+                foreach (var line in lines)
+                {
+                    // O formato da data é "dd/MM/yyyy HH:mm:ss" (19 caracteres)
+                    if (line.Length > 20 && line[19] == ':')
+                    {
+                        if (DateTime.TryParse(line.Substring(0, 19), out DateTime entryDate))
+                        {
+                            if (entryDate >= cutoffDate)
+                            {
+                                recentLines.Add(line);
+                            }
+                        }
+                        else
+                        {
+                            recentLines.Add(line); // Mantém linhas com formato inesperado
+                        }
+                    }
+                }
+                File.WriteAllLines(logFilePath, recentLines);
+            }
+            catch (Exception) { /* Ignora erros durante a limpeza do log */ }
         }
 
         private void Form1_KeyDown(object? sender, KeyEventArgs e)
@@ -211,7 +253,7 @@ namespace DemandasApp
                                 lblErrors.Text = $"Erros: {errorCount}";
                                 await Task.Delay(2000, token);
                             }
-                            await Task.Delay(500, token);
+                            await Task.Delay(1500, token);
 
                             // Update progress bar
                             int progress = (int)(((double)(i + 1) / totalChamados) * 100);
