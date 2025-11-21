@@ -70,7 +70,7 @@ namespace DemandasApp
                     using (var command = new MySqlCommand(countQuery, connection))
                     {
                         var totalCount = await command.ExecuteScalarAsync();
-                        lblTotal.Text = $"Total a processar: {totalCount}";
+                        lblTotal.Text = $"Total a atualizar: {totalCount}";
                     }
                 }
             }
@@ -228,7 +228,7 @@ namespace DemandasApp
                                 var (complemento, referencia) = await ScrapeData(idChamado, token);
                                 if (complemento != null && referencia != null)
                                 {
-                                    var updateQuery = $"UPDATE {Properties.Settings.Default.TABLE_NAME} SET complemento = CASE WHEN complemento IS NULL OR complemento = '' THEN @complemento ELSE complemento END, referencia = CASE WHEN referencia IS NULL OR referencia = '' THEN @referencia ELSE referencia END WHERE id_chamado = @id_chamado";
+                                    var updateQuery = $"UPDATE {Properties.Settings.Default.TABLE_NAME} SET complemento = @complemento, referencia = @referencia WHERE id_chamado = @id_chamado";
                                     using (var updateCommand = new MySqlCommand(updateQuery, connection))
                                     {
                                         updateCommand.Parameters.AddWithValue("@complemento", complemento);
@@ -246,6 +246,13 @@ namespace DemandasApp
                                 // O usuário cancelou, então saímos do loop silenciosamente.
                                 throw; // Lança novamente para ser pego pelo catch externo.
                             }
+                            catch (NotLoggedInException ex)
+                            {
+                                lblStatus.Text = "Não logado no SGRC.";
+                                Log(ex.Message);
+                                MessageBox.Show(ex.Message, "Login Necessário", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                break; // Para o loop de processamento
+                            }
                             catch (PermissionException)
                             {
                                 Log("Sessão expirada. Solicitando novo cookie.");
@@ -262,7 +269,7 @@ namespace DemandasApp
                                 var (complemento, referencia) = await ScrapeData(idChamado, token);
                                 if (complemento != null && referencia != null)
                                 {
-                                    var updateQuery = $"UPDATE {Properties.Settings.Default.TABLE_NAME} SET complemento = CASE WHEN complemento IS NULL OR complemento = '' THEN @complemento ELSE complemento END, referencia = CASE WHEN referencia IS NULL OR referencia = '' THEN @referencia ELSE referencia END WHERE id_chamado = @id_chamado";
+                                    var updateQuery = $"UPDATE {Properties.Settings.Default.TABLE_NAME} SET complemento = @complemento, referencia = @referencia WHERE id_chamado = @id_chamado";
                                     using (var updateCommand = new MySqlCommand(updateQuery, connection))
                                     {
                                         updateCommand.Parameters.AddWithValue("@complemento", complemento);
@@ -469,6 +476,12 @@ namespace DemandasApp
                 return (null, null);
             }
 
+            // Verifica se a página retornada é a de login, indicando que o usuário não está logado.
+            if (pageContent.Contains("id=\"Login\"") && pageContent.Contains("id=\"Senha\""))
+            {
+                throw new NotLoggedInException("Usuário não está logado no SGRC. Por favor, faça o login em https://sgrc.datametrica.com.br/PCRJ_Web_App/Login/Login.aspx e tente novamente.");
+            }
+
             if (!pageContent.Contains("Detalhamento do Chamado") && !pageContent.Contains("Endereço"))
             {
                 throw new PermissionException($"Sessão expirada ou página inesperada para o ID {idChamado}.");
@@ -566,4 +579,11 @@ namespace DemandasApp
     {
         public PermissionException(string message) : base(message) { }
     }
+
+    [Serializable]
+    public class NotLoggedInException : Exception
+    {
+        public NotLoggedInException(string message) : base(message) { }
+    }
+
 }
