@@ -33,6 +33,7 @@ namespace DemandasApp
             this.btnCancel = new System.Windows.Forms.Button();
             this.lblCookie = new System.Windows.Forms.Label();
             this.txtCookie = new System.Windows.Forms.TextBox();
+            this.chkUpdateOnlyOpen = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblHost
@@ -132,28 +133,6 @@ namespace DemandasApp
             this.txtTableName.Size = new System.Drawing.Size(262, 23);
             this.txtTableName.TabIndex = 11;
             // 
-            // btnSave
-            // 
-            this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Location = new System.Drawing.Point(297, 224);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 14;
-            this.btnSave.Text = "Salvar";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(216, 224);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 15;
-            this.btnCancel.Text = "Cancelar";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
             // lblCookie
             // 
             this.lblCookie.AutoSize = true;
@@ -170,13 +149,46 @@ namespace DemandasApp
             this.txtCookie.Size = new System.Drawing.Size(262, 23);
             this.txtCookie.TabIndex = 13;
             // 
+            // chkUpdateOnlyOpen
+            // 
+            this.chkUpdateOnlyOpen.AutoSize = true;
+            this.chkUpdateOnlyOpen.Location = new System.Drawing.Point(15, 227);
+            this.chkUpdateOnlyOpen.Name = "chkUpdateOnlyOpen";
+            this.chkUpdateOnlyOpen.Size = new System.Drawing.Size(296, 19);
+            this.chkUpdateOnlyOpen.TabIndex = 14;
+            this.chkUpdateOnlyOpen.Text = "Atualizar somente registros com status 'Aberto' ou 'Em andamento'";
+            this.chkUpdateOnlyOpen.UseVisualStyleBackColor = true;
+            // 
+            // btnSave
+            // 
+            this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnSave.Location = new System.Drawing.Point(297, 256);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 15;
+            this.btnSave.Text = "Salvar";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(216, 256);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 16;
+            this.btnCancel.Text = "Cancelar";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.btnSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(384, 261);
+            this.ClientSize = new System.Drawing.Size(384, 291);
+            this.Controls.Add(this.chkUpdateOnlyOpen);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.txtCookie);
@@ -198,7 +210,7 @@ namespace DemandasApp
             this.MinimizeBox = false;
             this.Name = "SettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Configurações do Banco de Dados";
+            this.Text = "Configurações";
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -221,5 +233,6 @@ namespace DemandasApp
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label lblCookie;
         private System.Windows.Forms.TextBox txtCookie;
+        private System.Windows.Forms.CheckBox chkUpdateOnlyOpen;
     }
 }

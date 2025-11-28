@@ -55,6 +55,7 @@ namespace DemandasApp
                 settingsForm.ShowDialog(this);
             }
             Log("Formulário de configurações aberto e fechado.");
+            UpdateInitialCount();
         }
 
         private async void UpdateInitialCount()
@@ -66,7 +67,13 @@ namespace DemandasApp
                 using (var connection = new MySqlConnection(connectionString))
                 {
                     await connection.OpenAsync();
-                    var countQuery = $"SELECT COUNT(*) FROM {Properties.Settings.Default.TABLE_NAME} WHERE status IN ('Aberto', 'Em andamento') AND (complemento IS NULL OR complemento = '') AND (referencia IS NULL OR referencia = '')";
+
+                    var tableName = Properties.Settings.Default.TABLE_NAME;
+                    var statusFilter = Properties.Settings.Default.UpdateOnlyOpenAndInProgress
+                        ? "status IN ('Aberto', 'Em andamento') AND"
+                        : "";
+                    var countQuery = $"SELECT COUNT(*) FROM {tableName} WHERE {statusFilter} (complemento IS NULL OR referencia IS NULL)";
+
                     using (var command = new MySqlCommand(countQuery, connection))
                     {
                         var totalCount = await command.ExecuteScalarAsync();
@@ -181,7 +188,13 @@ namespace DemandasApp
                 {
                     await connection.OpenAsync(token);
                     Log("Conexão com o banco de dados estabelecida.");
-                    var selectQuery = $"SELECT id_chamado FROM {Properties.Settings.Default.TABLE_NAME} WHERE status IN ('Aberto', 'Em andamento') AND (complemento IS NULL OR complemento = '') AND (referencia IS NULL OR referencia = '')";
+
+                    var tableName = Properties.Settings.Default.TABLE_NAME;
+                    var statusFilter = Properties.Settings.Default.UpdateOnlyOpenAndInProgress
+                        ? "status IN ('Aberto', 'Em andamento') AND"
+                        : "";
+                    var selectQuery = $"SELECT id_chamado FROM {tableName} WHERE {statusFilter} (complemento IS NULL OR referencia IS NULL) ORDER BY id_chamado DESC";
+
                     var command = new MySqlCommand(selectQuery, connection)
                     {
                         CommandTimeout = 60 // Adiciona um timeout de 60 segundos para a consulta
@@ -509,7 +522,7 @@ namespace DemandasApp
                     {
                         complemento = value;
                     }
-                    else if (label.Contains("referencia") || label.Contains("ponto de referencia"))
+                    else if (label.Contains("ponto de referência"))
                     {
                         referencia = value;
                     }
@@ -532,7 +545,7 @@ namespace DemandasApp
 
                     if (string.IsNullOrEmpty(referencia))
                     {
-                        var match = Regex.Match(fullText, @"Referencia.*?\|(.*?)\|", RegexOptions.IgnoreCase);
+                        var match = Regex.Match(fullText, @"Ponto de Referência.*?\|(.*?)\|", RegexOptions.IgnoreCase);
                         if (match.Success && match.Groups[1].Value.Length < 150)
                         {
                             referencia = match.Groups[1].Value.Trim();

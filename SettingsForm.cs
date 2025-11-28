@@ -20,6 +20,7 @@ namespace DemandasApp
             txtPassword.Text = Properties.Settings.Default.DB_PASS;
             txtTableName.Text = Properties.Settings.Default.TABLE_NAME;
             txtCookie.Text = Properties.Settings.Default.AUTH_COOKIE;
+            chkUpdateOnlyOpen.Checked = Properties.Settings.Default.UpdateOnlyOpenAndInProgress;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -31,6 +32,7 @@ namespace DemandasApp
             Properties.Settings.Default.DB_PASS = txtPassword.Text;
             Properties.Settings.Default.TABLE_NAME = txtTableName.Text;
             Properties.Settings.Default.AUTH_COOKIE = txtCookie.Text;
+            Properties.Settings.Default.UpdateOnlyOpenAndInProgress = chkUpdateOnlyOpen.Checked;
 
             Properties.Settings.Default.Save();
 

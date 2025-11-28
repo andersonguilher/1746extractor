@@ -131,5 +131,20 @@ namespace DemandasApp.Properties
                 this["AUTH_COOKIE"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UpdateOnlyOpenAndInProgress
+        {
+            get
+            {
+                return ((bool)(this["UpdateOnlyOpenAndInProgress"]));
+            }
+            set
+            {
+                this["UpdateOnlyOpenAndInProgress"] = value;
+            }
+        }
     }
 }
