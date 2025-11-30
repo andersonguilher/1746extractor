@@ -34,6 +34,7 @@ namespace DemandasApp
             this.lblCookie = new System.Windows.Forms.Label();
             this.txtCookie = new System.Windows.Forms.TextBox();
             this.chkUpdateOnlyOpen = new System.Windows.Forms.CheckBox();
+            this.chkFilterBySlaDate = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblHost
@@ -152,20 +153,30 @@ namespace DemandasApp
             // chkUpdateOnlyOpen
             // 
             this.chkUpdateOnlyOpen.AutoSize = true;
-            this.chkUpdateOnlyOpen.Location = new System.Drawing.Point(15, 227);
+            this.chkUpdateOnlyOpen.Location = new System.Drawing.Point(15, 215);
             this.chkUpdateOnlyOpen.Name = "chkUpdateOnlyOpen";
             this.chkUpdateOnlyOpen.Size = new System.Drawing.Size(296, 19);
             this.chkUpdateOnlyOpen.TabIndex = 14;
             this.chkUpdateOnlyOpen.Text = "Atualizar somente registros com status 'Aberto' ou 'Em andamento'";
             this.chkUpdateOnlyOpen.UseVisualStyleBackColor = true;
             // 
+            // chkFilterBySlaDate
+            // 
+            this.chkFilterBySlaDate.AutoSize = true;
+            this.chkFilterBySlaDate.Location = new System.Drawing.Point(15, 240);
+            this.chkFilterBySlaDate.Name = "chkFilterBySlaDate";
+            this.chkFilterBySlaDate.Size = new System.Drawing.Size(325, 19);
+            this.chkFilterBySlaDate.TabIndex = 15;
+            this.chkFilterBySlaDate.Text = "Atualizar somente registros com Data SLA >= Data de Início";
+            this.chkFilterBySlaDate.UseVisualStyleBackColor = true;
+            // 
             // btnSave
             // 
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Location = new System.Drawing.Point(297, 256);
+            this.btnSave.Location = new System.Drawing.Point(297, 275);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 15;
+            this.btnSave.TabIndex = 16;
             this.btnSave.Text = "Salvar";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -173,10 +184,10 @@ namespace DemandasApp
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(216, 256);
+            this.btnCancel.Location = new System.Drawing.Point(216, 275);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 16;
+            this.btnCancel.TabIndex = 17;
             this.btnCancel.Text = "Cancelar";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -187,7 +198,8 @@ namespace DemandasApp
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(384, 291);
+            this.ClientSize = new System.Drawing.Size(384, 311);
+            this.Controls.Add(this.chkFilterBySlaDate);
             this.Controls.Add(this.chkUpdateOnlyOpen);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
@@ -234,5 +246,6 @@ namespace DemandasApp
         private System.Windows.Forms.Label lblCookie;
         private System.Windows.Forms.TextBox txtCookie;
         private System.Windows.Forms.CheckBox chkUpdateOnlyOpen;
+        private System.Windows.Forms.CheckBox chkFilterBySlaDate;
     }
 }

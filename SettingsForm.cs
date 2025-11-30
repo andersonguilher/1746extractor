@@ -21,6 +21,7 @@ namespace DemandasApp
             txtTableName.Text = Properties.Settings.Default.TABLE_NAME;
             txtCookie.Text = Properties.Settings.Default.AUTH_COOKIE;
             chkUpdateOnlyOpen.Checked = Properties.Settings.Default.UpdateOnlyOpenAndInProgress;
+            chkFilterBySlaDate.Checked = Properties.Settings.Default.FilterBySlaDate;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -33,11 +34,12 @@ namespace DemandasApp
             Properties.Settings.Default.TABLE_NAME = txtTableName.Text;
             Properties.Settings.Default.AUTH_COOKIE = txtCookie.Text;
             Properties.Settings.Default.UpdateOnlyOpenAndInProgress = chkUpdateOnlyOpen.Checked;
+            Properties.Settings.Default.FilterBySlaDate = chkFilterBySlaDate.Checked;
 
             Properties.Settings.Default.Save();
 
             MessageBox.Show("Configurações salvas com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            // A propriedade DialogResult no botão já fecha o formulário.
+            this.DialogResult = DialogResult.OK;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

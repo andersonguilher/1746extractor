@@ -52,10 +52,12 @@ namespace DemandasApp
             using (var settingsForm = new SettingsForm())
             {
                 // Show the settings form modally
-                settingsForm.ShowDialog(this);
+                if (settingsForm.ShowDialog(this) == DialogResult.OK)
+                {
+                    Log("Configurações salvas. Atualizando contagem.");
+                    UpdateInitialCount();
+                }
             }
-            Log("Formulário de configurações aberto e fechado.");
-            UpdateInitialCount();
         }
 
         private async void UpdateInitialCount()
@@ -69,15 +71,23 @@ namespace DemandasApp
                     await connection.OpenAsync();
 
                     var tableName = Properties.Settings.Default.TABLE_NAME;
-                    var statusFilter = Properties.Settings.Default.UpdateOnlyOpenAndInProgress
-                        ? "status IN ('Aberto', 'Em andamento') AND"
-                        : "";
-                    var countQuery = $"SELECT COUNT(*) FROM {tableName} WHERE {statusFilter} (complemento IS NULL OR referencia IS NULL)";
+                    var conditions = new List<string> { "(complemento IS NULL OR referencia IS NULL)" };
+
+                    if (Properties.Settings.Default.UpdateOnlyOpenAndInProgress)
+                    {
+                        conditions.Add("status IN ('Aberto', 'Em andamento')");
+                    }
+                    if (Properties.Settings.Default.FilterBySlaDate)
+                    {
+                        conditions.Add("STR_TO_DATE(data_sla, '%d/%m/%Y') >= STR_TO_DATE(data_inicio, '%d/%m/%Y')");
+                    }
+
+                    var countQuery = $"SELECT COUNT(*) FROM {tableName} WHERE {string.Join(" AND ", conditions)}";
 
                     using (var command = new MySqlCommand(countQuery, connection))
                     {
                         var totalCount = await command.ExecuteScalarAsync();
-                        lblTotal.Text = $"Total a atualizar: {totalCount}";
+                        lblTotal.Text = $"Total a processar: {totalCount}";
                     }
                 }
             }
@@ -190,10 +200,17 @@ namespace DemandasApp
                     Log("Conexão com o banco de dados estabelecida.");
 
                     var tableName = Properties.Settings.Default.TABLE_NAME;
-                    var statusFilter = Properties.Settings.Default.UpdateOnlyOpenAndInProgress
-                        ? "status IN ('Aberto', 'Em andamento') AND"
-                        : "";
-                    var selectQuery = $"SELECT id_chamado FROM {tableName} WHERE {statusFilter} (complemento IS NULL OR referencia IS NULL) ORDER BY id_chamado DESC";
+                    var conditions = new List<string> { "(complemento IS NULL OR referencia IS NULL)" };
+
+                    if (Properties.Settings.Default.UpdateOnlyOpenAndInProgress)
+                    {
+                        conditions.Add("status IN ('Aberto', 'Em andamento')");
+                    }
+                    if (Properties.Settings.Default.FilterBySlaDate)
+                    {
+                        conditions.Add("STR_TO_DATE(data_sla, '%d/%m/%Y') >= STR_TO_DATE(data_inicio, '%d/%m/%Y')");
+                    }
+                    var selectQuery = $"SELECT id_chamado FROM {tableName} WHERE {string.Join(" AND ", conditions)} ORDER BY id_chamado DESC";
 
                     var command = new MySqlCommand(selectQuery, connection)
                     {
